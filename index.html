@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Hilary | El Reino del Sol 🌟</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cinzel for fairytale titles & Quicksand for text -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Quicksand:wght@400;600;700&family=Pinyon+Script&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: radial-gradient(circle at center, #1b1035 0%, #0c061a 100%);
+            color: #f3e9d2;
+            overflow-x: hidden;
+        }
+        
+        .font-fairytale {
+            font-family: 'Cinzel Decorative', cursive;
+        }
+
+        .font-script {
+            font-family: 'Pinyon Script', cursive;
+        }
+
+        /* Floating lanterns animation */
+        @keyframes floatUp {
+            0% {
+                transform: translateY(110vh) translateX(0) scale(0.6) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.9;
+            }
+            90% {
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(-20vh) translateX(50px) scale(1) rotate(15deg);
+                opacity: 0;
+            }
+        }
+
+        .lantern {
+            position: fixed;
+            width: 45px;
+            height: 65px;
+            background: linear-gradient(135deg, #ffb347 0%, #ffcc33 50%, #ff6600 100%);
+            border-radius: 20px 20px 10px 10px;
+            box-shadow: 0 0 25px #ffaa00, inset 0 0 15px #ffee55;
+            animation: floatUp 12s infinite linear;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .lantern::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 15px;
+            width: 15px;
+            height: 6px;
+            background: #442200;
+            border-radius: 3px;
+        }
+
+        .lantern::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 12px;
+            width: 21px;
+            height: 6px;
+            background: #442200;
+            border-radius: 3px;
+        }
+
+        /* Sun emblem watermark */
+        .sun-emblem {
+            background: radial-gradient(circle, rgba(255,215,0,0.2) 0%, rgba(255,165,0,0) 70%);
+        }
+
+        /* Pergamino texture */
+        .pergamino {
+            background: #fcf6e9;
+            color: #4a2c0f;
+            border: 4px solid #d4af37;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 40px rgba(184, 134, 11, 0.2);
+            position: relative;
+        }
+
+        .pergamino::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border: 1px dashed #b8860b;
+            margin: 8px;
+            pointer-events: none;
+        }
+
+        /* Glowing text effect */
+        .glow-text {
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.7), 0 0 30px rgba(255, 165, 0, 0.5);
+        }
+
+        /* Glassmorphism card */
+        .glass-card {
+            background: rgba(30, 20, 60, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0c061a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4af37;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body class="min-h-screen relative flex flex-col items-center justify-between selection:bg-amber-500 selection:text-white">
+
+    <div id="lanterns-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
+
+    <!-- Background Music Audio with exact song source -->
+    <audio id="bg-music" loop>
+        <source src="cancion.mp3" type="audio/mpeg">
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=magical-fantasy-quest-111161.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+
+    <!-- Floating Music Controls / Welcome Banner -->
+    <div class="fixed top-4 right-4 z-50 flex items-center gap-3 glass-card px-4 py-2 rounded-full shadow-2xl">
+        <div class="flex items-center gap-2 text-amber-300">
+            <i class="fa-solid fa-music animate-spin" id="music-icon" style="animation-duration: 3s;"></i>
+            <span class="text-xs font-semibold hidden sm:inline">Música Mágica</span>
+        </div>
+        <button onclick="toggleMusic()" id="music-btn" class="bg-amber-500 hover:bg-amber-400 text-purple-950 px-3 py-1 rounded-full text-xs font-bold transition transform hover:scale-105 shadow">
+            <i class="fa-solid fa-play mr-1" id="btn-icon"></i> <span id="btn-text">Reproducir</span>
+        </button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="relative z-10 w-full max-w-5xl mx-auto px-4 py-8 flex flex-col items-center gap-12">
+
+        <!-- Header Section -->
+        <header class="text-center mt-6 relative w-full">
+            <div class="absolute -top-12 left-1/2 transform -translate-x-1/2 w-64 h-64 sun-emblem rounded-full filter blur-xl pointer-events-none"></div>
+            
+            <div class="flex justify-center items-center gap-4 mb-2">
+                <!-- Pascal Badge -->
+                <div class="bg-emerald-900/80 border border-emerald-400 p-2 rounded-full shadow-lg animate-bounce" style="animation-duration: 4s;" title="¡Pascal te saluda!">
+                    <span class="text-2xl">🦎</span>
+                </div>
+                <h2 class="text-amber-300 tracking-widest text-sm uppercase font-semibold">Un cuento jamás contado</h2>
+                <!-- Maximus Badge -->
+                <div class="bg-amber-900/80 border border-amber-400 p-2 rounded-full shadow-lg animate-pulse" title="¡Maximus vigila el reino!">
+                    <span class="text-2xl">🐴</span>
+                </div>
+            </div>
+
+            <h1 class="text-4xl md:text-7xl font-fairytale text-amber-200 glow-text mb-4">
+                Para Hilary 💖
+            </h1>
+            <p class="text-lg md:text-xl text-amber-100 max-w-2xl mx-auto font-medium italic">
+                “Y al fin veo la luz... y se aclaró aquella niebla.” ✨
+            </p>
+        </header>
+
+        <!-- Letters Section (Pergamino) -->
+        <section class="w-full flex flex-col gap-8 items-center">
+            <div class="text-center">
+                <h3 class="text-2xl font-fairytale text-amber-300 mb-1"><i class="fa-solid fa-feather-pointed mr-2"></i> Las Cartas del Reino</h3>
+                <p class="text-sm text-amber-200/80">Mensajes escritos con el corazón desde la torre más alta</p>
+            </div>
+
+            <!-- Letter 1 (Exact transcription from user's first image) -->
+            <div class="pergamino w-full max-w-2xl p-8 md:p-12 rounded-2xl transform rotate-[-0.5deg] transition hover:rotate-0 duration-300">
+                <div class="absolute top-4 right-6 text-amber-700/30 text-6xl font-fairytale">#1</div>
+                <div class="text-center mb-6">
+                    <h4 class="text-2xl font-bold font-fairytale text-amber-900">Hilary 💖</h4>
+                    <div class="w-20 h-0.5 bg-amber-600 mx-auto mt-2"></div>
+                </div>
+                <div class="space-y-4 text-amber-950 text-base md:text-lg leading-relaxed font-semibold">
+                    <p>
+                        Quiero aprovechar para decirte lo especial que eres para mí. Eres una persona súper cariñosa, divertida, amable, inteligente y, obviamente, bonita 🥺💗.
+                    </p>
+                    <p>
+                        Me encanta la forma en la que eres y cómo siempre logras hacer que los momentos sean más divertidos. También admiro mucho lo estudiosa y dedicada que eres, porque aunque a veces no lo digamos, esas cosas hacen que una persona sea todavía más especial. 🥺
+                    </p>
+                    <p>
+                        Gracias por ser una amiga tan linda y por todos los momentos, las risas y las conversaciones. Espero que nuestra amistad siga creciendo y que podamos compartir muchísimos momentos más juntas. Nunca cambies esa forma tan bonita de ser. 💖✨
+                    </p>
+                    <div class="text-right mt-6 pt-4 border-t border-amber-900/20 font-script text-3xl text-amber-900">
+                        Te quiero muchísimo, Hilary. 🫶💗
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter 2 (Additional Tangled themed friendship letter) -->
+            <div class="pergamino w-full max-w-2xl p-8 md:p-12 rounded-2xl transform rotate-[1deg] transition hover:rotate-0 duration-300">
+                <div class="absolute top-4 right-6 text-amber-700/30 text-6xl font-fairytale">#2</div>
+                <div class="text-center mb-6">
+                    <h4 class="text-2xl font-bold font-fairytale text-amber-900">Más allá de las murallas 🏰</h4>
+                    <div class="w-20 h-0.5 bg-amber-600 mx-auto mt-2"></div>
+                </div>
+                <div class="space-y-4 text-amber-950 text-base md:text-lg leading-relaxed font-semibold">
+                    <p>
+                        Igual que Rapunzel cuando salió de su torre por primera vez y descubrió que el mundo exterior era mágico, conocerte a ti iluminó cada rincón de mi vida con faroles dorados. 🏮✨
+                    </p>
+                    <p>
+                        No importa si estamos explorando nuevas aventuras o simplemente conversando un rato; tu energía brilla con tanta intensidad que eclipsa cualquier tormenta. Eres de esas personas raras y valiosas que hacen que la vida valga la pena de verdad.
+                    </p>
+                    <p>
+                        Que nunca te falten sueños por cumplir, sartenes para defenderte de los bandidos (como los de la Tablada El Patizambo) y amigos que te valoren por el tesoro que eres. 🌟
+                    </p>
+                    <div class="text-right mt-6 pt-4 border-t border-amber-900/20 font-script text-3xl text-amber-900">
+                        Por siempre tu compañera de aventuras. 🐎🦎
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Special Photo Gallery Section -->
+        <section class="w-full flex flex-col items-center gap-6 my-6">
+            <div class="text-center">
+                <h3 class="text-2xl font-fairytale text-amber-300 mb-1"><i class="fa-solid fa-camera-retro mr-2"></i> El Diario de los Recuerdos</h3>
+                <p class="text-sm text-amber-200/80">Instantes capturados en el reino de Corona</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
+                <!-- Photo 1 (Image 2) -->
+                <div class="glass-card rounded-2xl overflow-hidden p-3 transform hover:-translate-y-2 transition duration-300 group shadow-xl">
+                    <div class="relative overflow-hidden rounded-xl aspect-[3/4] bg-purple-950">
+                        <img src="image_2.png" alt="Hilary Recuerdo 1" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/400x500/2a1b4e/ffd700?text=Hilary+%E2%9C%A8'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-4">
+                            <p class="text-amber-200 text-sm font-semibold">"Brillando con luz propia" ✨</p>
+                        </div>
+                    </div>
+                    <div class="p-3 text-center">
+                        <span class="text-xs text-amber-300 font-semibold uppercase tracking-wider">Momento Mágico I</span>
+                    </div>
+                </div>
+
+                <!-- Photo 2 (Image 3) -->
+                <div class="glass-card rounded-2xl overflow-hidden p-3 transform hover:-translate-y-2 transition duration-300 group shadow-xl">
+                    <div class="relative overflow-hidden rounded-xl aspect-[3/4] bg-purple-950">
+                        <img src="image_3.png" alt="Hilary Recuerdo 2" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/400x500/2a1b4e/ffd700?text=Hilary+%E2%9C%A8'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-4">
+                            <p class="text-amber-200 text-sm font-semibold">"Lista para la gran aventura" 👑</p>
+                        </div>
+                    </div>
+                    <div class="p-3 text-center">
+                        <span class="text-xs text-amber-300 font-semibold uppercase tracking-wider">Momento Mágico II</span>
+                    </div>
+                </div>
+
+                <!-- Photo 3 (Image 4) -->
+                <div class="glass-card rounded-2xl overflow-hidden p-3 transform hover:-translate-y-2 transition duration-300 group shadow-xl">
+                    <div class="relative overflow-hidden rounded-xl aspect-[3/4] bg-purple-950">
+                        <img src="image_4.png" alt="Hilary Recuerdo 3" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/400x500/2a1b4e/ffd700?text=Hilary+%E2%9C%A8'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-4">
+                            <p class="text-amber-200 text-sm font-semibold">"Frente al mar y las estrellas" 🌊</p>
+                        </div>
+                    </div>
+                    <div class="p-3 text-center">
+                        <span class="text-xs text-amber-300 font-semibold uppercase tracking-wider">Momento Mágico III</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Wish Generator Section -->
+        <section class="glass-card w-full max-w-2xl rounded-3xl p-8 text-center shadow-2xl border border-amber-400/40">
+            <h3 class="text-2xl font-fairytale text-amber-300 mb-3"><i class="fa-solid fa-fire-flame-curved mr-2"></i> Envía tu Linterna al Cielo</h3>
+            <p class="text-sm text-amber-100/90 mb-6">Escribe un deseo especial y libéralo junto con los faroles flotantes.</p>
+            
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                <input type="text" id="wish-input" placeholder="Escribe tu deseo aquí..." class="px-4 py-3 rounded-full bg-purple-950/80 border border-amber-400/50 text-amber-100 placeholder-amber-400/50 focus:outline-none focus:ring-2 focus:ring-amber-400 flex-grow text-sm">
+                <button onclick="sendWish()" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-purple-950 font-bold px-6 py-3 rounded-full shadow-lg transition transform hover:scale-105 text-sm">
+                    <i class="fa-solid fa-paper-plane mr-2"></i> Lanzar Linterna
+                </button>
+            </div>
+            <div id="wish-message" class="mt-4 text-amber-300 text-sm italic font-semibold min-h-[24px]"></div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-xs text-amber-300/60 pb-8 flex flex-col items-center gap-2">
+            <div class="flex items-center gap-2 text-lg">
+                <span>👑</span>
+                <span>✨</span>
+                <span>🦎</span>
+            </div>
+            <p>Creado con todo el encanto del Reino de Corona especialmente para Hilary.</p>
+            <p>© 2026 - Que tus sueños más grandes se hagan realidad.</p>
+        </footer>
+
+    </div>
+
+    <!-- Welcome Modal for Music Interaction (Ensures browsers allow audio playback) -->
+    <div id="welcome-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full p-8 rounded-3xl text-center shadow-2xl border border-amber-400/50 flex flex-col items-center gap-4">
+            <div class="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-300 text-3xl animate-bounce">
+                👑
+            </div>
+            <h3 class="text-2xl font-fairytale text-amber-200">El Reino de Corona te da la bienvenida</h3>
+            <p class="text-sm text-amber-100/90 leading-relaxed">
+                Una sorpresa mágica con música, faroles flotantes, Pascal y cartas especiales te espera, Hilary. 💖
+            </p>
+            <button onclick="startExperience()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-purple-950 font-bold py-3 rounded-full shadow-lg transition transform hover:scale-105 text-base flex items-center justify-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Entrar al Reino y Sonar Música
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Generate Floating Lanterns dynamically
+        function createLanterns() {
+            const container = document.getElementById('lanterns-container');
+            const count = 15;
+            for (let i = 0; i < count; i++) {
+                const lantern = document.createElement('div');
+                lantern.className = 'lantern';
+                lantern.style.left = Math.random() * 100 + 'vw';
+                lantern.style.animationDuration = (8 + Math.random() * 10) + 's';
+                lantern.style.animationDelay = (Math.random() * 10) + 's';
+                container.appendChild(lantern);
+            }
+        }
+
+        // Music Playback Management
+        let isPlaying = false;
+        const audio = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('music-btn');
+        const musicIcon = document.getElementById('music-icon');
+        const btnIcon = document.getElementById('btn-icon');
+        const btnText = document.getElementById('btn-text');
+        const welcomeModal = document.getElementById('welcome-modal');
+
+        function startExperience() {
+            audio.volume = 0.8;
+            audio.play().then(() => {
+                isPlaying = true;
+                btnIcon.className = 'fa-solid fa-pause mr-1';
+                btnText.textContent = 'Pausar';
+                musicIcon.classList.add('fa-spin');
+                welcomeModal.style.opacity = '0';
+                setTimeout(() => {
+                    welcomeModal.style.display = 'none';
+                }, 500);
+            }).catch(e => {
+                console.log("Audio play error:", e);
+                welcomeModal.style.display = 'none';
+            });
+        }
+
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+                btnIcon.className = 'fa-solid fa-play mr-1';
+                btnText.textContent = 'Reproducir';
+                musicIcon.classList.remove('fa-spin');
+            } else {
+                audio.play().then(() => {
+                    isPlaying = true;
+                    btnIcon.className = 'fa-solid fa-pause mr-1';
+                    btnText.textContent = 'Pausar';
+                    musicIcon.classList.add('fa-spin');
+                }).catch(e => {
+                    console.log("Playback error:", e);
+                });
+            }
+        }
+
+        window.addEventListener('load', () => {
+            createLanterns();
+        });
+
+        // Wish generator function
+        function sendWish() {
+            const input = document.getElementById('wish-input');
+            const msg = document.getElementById('wish-message');
+            const val = input.value.trim();
+
+            if (val === '') {
+                msg.textContent = "Por favor escribe un pequeño deseo para Hilary antes de lanzar tu linterna ✨";
+                return;
+            }
+
+            msg.textContent = `🌟 ¡Tu deseo: "${val}" ha ascendido al cielo de Corona junto a miles de faroles!`;
+            input.value = '';
+
+            // Create extra floating lantern right where the wish was made
+            const container = document.getElementById('lanterns-container');
+            const lantern = document.createElement('div');
+            lantern.className = 'lantern';
+            lantern.style.left = (Math.random() * 80 + 10) + 'vw';
+            lantern.style.animationDuration = '6s';
+            container.appendChild(lantern);
+
+            setTimeout(() => {
+                lantern.remove();
+            }, 6000);
+        }
+    </script>
+</body>
+</html>
